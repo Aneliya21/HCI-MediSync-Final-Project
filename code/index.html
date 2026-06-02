@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSync - Интерактивен Прототип</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="phone-wrapper" id="phoneContainer">
+    <div class="phone-notch"></div>
+
+    <div id="screen-splash" class="screen active">
+        <div class="splash-logo"><i class="fa-solid fa-heart-circle-plus"></i></div>
+        <h1 class="main-title">MediSync</h1>
+        <p style="color: var(--soft-blue); font-weight: 600;">Универсален здравен асистент</p>
+    </div>
+
+    <div id="screen-welcome" class="screen">
+        <h1 class="main-title" style="margin-top: 30px; margin-bottom: 10px;">Добре дошли!</h1>
+        <p class="instruction-text sub-text">Моля, изберете предпочитания от вас режим на работа на интерфейса</p>
+        
+        <button class="btn btn-cyan" onclick="selectAccessibility('standard')">
+            <i class="fa-solid fa-mobile-screen"></i> Стандартен режим
+        </button>
+        <button class="btn btn-outline" onclick="selectAccessibility('high')">
+            <i class="fa-solid fa-glasses"></i> Улеснен режим (Accessibility)
+        </button>
+    </div>
+
+    <div id="screen-gate" class="screen">
+        <div class="splash-logo" style="font-size: 50px; text-align: center; margin-top: 40px;"><i class="fa-solid fa-heart-circle-plus"></i></div>
+        <h2 class="screen-header">Вашият здравен асистент</h2>
+        <p class="sub-text">Имате ли вече създаден профил в системата на MediSync?</p>
+        
+        <button class="btn btn-cyan" onclick="changeScreen('screen-login')">Да, имам профил (Вход)</button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-register-role')">Не, създай нов профил</button>
+    </div>
+
+    <div id="screen-login" class="screen">
+        <h2 class="screen-header" style="margin-top: 20px;">Вход в профила</h2>
+        <p class="sub-text">Моля, въведете вашите данни за достъп</p>
+        
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="text" id="login-email" placeholder="E-mail или телефонен номер">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="login-pass" placeholder="Парола">
+        </div>
+        
+        <button class="btn btn-cyan" style="margin-top: 10px;" onclick="doLogin()">Влез</button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-gate')">Назад</button>
+    </div>
+
+    <div id="screen-register-role" class="screen">
+        <h2 class="screen-header" style="margin-top: 15px;">Регистрация</h2>
+        <p class="sub-text">Стъпка 1: Изберете вашата роля</p>
+        
+        <div class="role-option selected" onclick="selectRadio(this, 'role-patient')">
+            <input type="radio" id="role-patient" name="user-role" checked>
+            <div class="role-title">Аз съм Пациент</div>
+        </div>
+        <div class="role-option" onclick="selectRadio(this, 'role-guardian')">
+            <input type="radio" id="role-guardian" name="user-role">
+            <div class="role-title">Аз съм Доверено лице</div>
+        </div>
+        <div class="role-option" onclick="selectRadio(this, 'role-doctor')">
+            <input type="radio" id="role-doctor" name="user-role">
+            <div class="role-title">Аз съм Лекар</div>
+        </div>
+        
+        <button class="btn btn-cyan" style="margin-top: 15px;" onclick="changeScreen('screen-register-data')">Напред</button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-gate')">Отказ</button>
+    </div>
+
+    <div id="screen-register-data" class="screen">
+        <h2 class="screen-header">Създаване на профил</h2>
+        <p class="sub-text">Стъпка 2: Въведете вашите лични данни</p>
+        
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="reg-name" placeholder="Име и Фамилия">
+            <div class="error-message" id="err-name">Името трябва да съдържа поне 4 символа.</div>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="reg-email" placeholder="Имейл адрес">
+            <div class="error-message" id="err-email">Моля, въведете валиден имейл адрес.</div>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="reg-password" placeholder="Парола (мин. 6 символа)" oninput="validatePasswordStrength()">
+            <div class="strength-container">
+                <span class="strength-label" id="strength-txt">Сила: Още няма</span>
+                <div class="strength-bar"><div class="strength-fill" id="strength-meter-bar"></div></div>
+            </div>
+            <div class="error-message" id="err-pass">Паролата трябва да е поне 6 символа.</div>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-shield-halved"></i>
+            <input type="password" id="reg-confirm" placeholder="Потвърди паролата">
+            <div class="error-message" id="err-confirm">Паролите не съвпадат.</div>
+        </div>
+        
+        <button class="btn btn-cyan" style="margin-top: 5px;" onclick="submitRegistration()">Завърши регистрация</button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-register-role')">Назад</button>
+    </div>
+
+    <div id="screen-dashboard" class="screen">
+        <div class="dashboard-header">
+            <div class="user-welcome">Здравей, <span id="dynamic-user-name">Лили</span>!</div>
+            <div class="status-badge"><i class="fa-solid fa-wifi"></i> Свързано</div>
+        </div>
+
+        <div class="menu-card" onclick="changeScreen('screen-medicines')">
+            <i class="fa-solid fa-pills" style="background: #EBF8FF; color: #3182CE;"></i>
+            <span>Моите лекарства</span>
+        </div>
+        <div class="menu-card" onclick="changeScreen('screen-report')">
+            <i class="fa-solid fa-file-medical" style="background: #E6F9EE; color: #2ECC71;"></i>
+            <span>Моят доклад</span>
+        </div>
+        <div class="menu-card" onclick="changeScreen('screen-indicators')">
+            <i class="fa-solid fa-heart-pulse" style="background: #FFF5F5; color: #E53E3E;"></i>
+            <span>Моите показатели</span>
+        </div>
+
+        <div class="sos-container">
+            <div class="sos-round-btn" onclick="openSOSModal()">SOS</div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-link active-link" onclick="changeScreen('screen-dashboard')">
+                <i class="fa-solid fa-house"></i><span>Начало</span>
+            </div>
+            <div class="nav-link" onclick="changeScreen('screen-medicines')">
+                <i class="fa-solid fa-calendar-days"></i><span>График</span>
+            </div>
+            <div class="nav-link" onclick="changeScreen('screen-indicators')">
+                <i class="fa-solid fa-clipboard-list"></i><span>Данни</span>
+            </div>
+            <div class="nav-link" onclick="alert('Настройки на системата и Bluetooth синхронизация.')">
+                <i class="fa-solid fa-gear"></i><span>Опции</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-medicines" class="screen">
+        <h2 class="screen-header" style="text-align:left; margin-bottom:15px; margin-top:10px;">Моите лекарства</h2>
+        
+        <table class="med-table">
+            <thead>
+                <tr>
+                    <th>Лекарство</th>
+                    <th>Доза</th>
+                    <th>Час</th>
+                </tr>
+            </thead>
+            <tbody id="med-table-body">
+                <tr>
+                    <td><strong>Аспирин Протект</strong></td>
+                    <td>100 mg</td>
+                    <td>10:00 ч.</td>
+                </tr>
+                <tr>
+                    <td><strong>Омепразол</strong></td>
+                    <td>20 mg</td>
+                    <td>12:00 ч.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-cyan" onclick="changeScreen('screen-add-medicine')">
+            <i class="fa-solid fa-plus"></i> Добави ново лекарство
+        </button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-dashboard')">Обратно към началото</button>
+    </div>
+
+    <div id="screen-add-medicine" class="screen">
+        <h2 class="screen-header">Ново лекарство</h2>
+        <p class="sub-text">Въведете параметри или сканирайте опаковката</p>
+        
+        <button class="btn btn-outline" style="background: #FFF9E6; border-color: #FFEAA7;" onclick="triggerOCR()">
+            <i class="fa-solid fa-camera" style="color: #D69E2E;"></i> 📸 Сканирай кутия (OCR)
+        </button>
+
+        <div class="input-group" style="margin-top:10px;">
+            <i class="fa-solid fa-prescription-bottle-medical"></i>
+            <input type="text" id="new-med-name" placeholder="Име на медикамента">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-weight-hanging"></i>
+            <input type="text" id="new-med-dose" placeholder="Дозировка (напр. 1 табл.)">
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-clock"></i>
+            <input type="time" id="new-med-time" value="08:00">
+        </div>
+
+        <button class="btn btn-cyan" onclick="saveNewMedicine()">Запази медикамент</button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-medicines')">Отказ</button>
+    </div>
+
+    <div id="screen-report" class="screen">
+        <h2 class="screen-header" style="margin-top:10px;">Здравен доклад</h2>
+        <p class="sub-text">Генериран преглед за изминалата седмица</p>
+        
+        <div class="chart-wrapper" style="text-align:left; font-size:14px; line-height:1.6;">
+            <p><strong>Период:</strong> Последната седмица</p>
+            <p><strong>Редовност на прием:</strong> <span style="color:#2ECC71; font-weight:700;">94% спазени</span></p>
+            <p><strong>Среден пулс:</strong> 74 bpm</p>
+            <p><strong>Аномалии:</strong> Няма засечени критични нива</p>
+        </div>
+
+        <button class="btn btn-cyan" onclick="alert('Докладът е експортиран като PDF файл и е изпратен на Вашия лекар.')">
+            <i class="fa-solid fa-file-pdf"></i> Експорт на доклада (PDF)
+        </button>
+        <button class="btn btn-outline" onclick="changeScreen('screen-dashboard')">Назад</button>
+    </div>
+
+    <div id="screen-indicators" class="screen">
+        <h2 class="screen-header" style="margin-top:10px;">Моите показатели</h2>
+        
+        <div class="metrics-grid">
+            <div class="metric-mini-card">
+                <i class="fa-solid fa-heart-pulse" style="color: #E53E3E;"></i>
+                <div style="font-size:12px; color:#718096;">Пулс</div>
+                <div class="metric-value">72 bpm</div>
+            </div>
+            <div class="metric-mini-card">
+                <i class="fa-solid fa-shoe-prints" style="color: #3182CE;"></i>
+                <div style="font-size:12px; color:#718096;">Крачки</div>
+                <div class="metric-value">5,420</div>
+            </div>
+        </div>
+
+        <div class="chart-wrapper">
+            <h3 style="font-size:14px; color:var(--primary-blue); font-weight:700;">Динамика на пулса през седмицата</h3>
+            <div class="bar-chart">
+                <div class="chart-bar-item"><div class="bar-pill" style="height: 65px;"></div><div class="bar-label">Пн</div></div>
+                <div class="chart-bar-item"><div class="bar-pill" style="height: 85px;"></div><div class="bar-label">Вт</div></div>
+                <div class="chart-bar-item"><div class="bar-pill" style="height: 70px;"></div><div class="bar-label">Ср</div></div>
+                <div class="chart-bar-item"><div class="bar-pill" style="height: 105px;"></div><div class="bar-label">Чт</div></div>
+                <div class="chart-bar-item"><div class="bar-pill" style="height: 75px;"></div><div class="bar-label">Пт</div></div>
+            </div>
+        </div>
+
+        <button class="btn btn-outline" onclick="changeScreen('screen-dashboard')">Връщане</button>
+    </div>
+
+    <div class="overlay" id="sosModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; color: var(--danger-red); margin-bottom: 15px;"></i>
+            <h2 style="color: var(--danger-red); font-weight: 900; margin-bottom: 10px;">🚨 SOS РЕЖИМ</h2>
+            <p style="font-size: 14px; margin-bottom: 20px; line-height: 1.4;">Засечена е критична аномалия или задействан паник бутон! Известяване на спешна помощ след:</p>
+            <div id="sos-countdown" style="font-size: 48px; font-weight: 900; color: var(--danger-red); margin-bottom: 20px;">10</div>
+            <button class="btn btn-cyan" style="background-color: var(--danger-red); box-shadow: none;" onclick="alert('Свързване с тел. 112...')">ПОЗВЪНИ ВЕДНАГА</button>
+            <button class="btn btn-outline" onclick="closeSOSModal()">ОТМЯНА</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="code.js"></script>
+</body>
+</html>
