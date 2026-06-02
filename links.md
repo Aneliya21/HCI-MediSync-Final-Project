@@ -3,4 +3,4 @@
 Проектът в dev mode режим е достъпен на следния уеб адрес: https://www.figma.com/design/nuZXKnrCmhUvE9ZLWWzHFI/MediSync_Prototype?node-id=0-1&m=dev&t=qSGegiFOkRayUBoD-1
 
 Проектът в интерактивен режим е достъпен на следния уеб
-адрес: https://github.com/Aneliya21/HCI-MediSync-Final-Project/tree/main
+адрес: https://github.com/Aneliya21/HCI-MediSync-Final-Project/tree/main/code
